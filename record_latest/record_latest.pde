@@ -36,15 +36,16 @@ void setup(){
   }
   out = minim.getLineOut( Minim.STEREO );
   textFont(createFont("Arial", 12));  
-  String portName = Serial.list()[3]; 
+  String portName = Serial.list()[5]; 
   //println(Serial.list()[3]);
   myPort = new Serial(this, portName, 9600); 
   myPort.bufferUntil(linefeed);
 }
 
+//get serial reading
 void serialEvent(Serial myPort){
   if(val != null){
-    if (val.equals("0")){
+    if (val.equals("pressed")){
       keytoggle = true;
     } else{
       keytoggle = false;
@@ -63,6 +64,7 @@ void serialEvent(Serial myPort){
       currentPlaybackIndex = -1;
       recorders[numberOfRecordings].endRecord();
       recorders[numberOfRecordings].save();
+      myPort.write(numberOfRecordings);
       recordingStatus = "play";
 
     } else if (recordingStatus == "play") {
@@ -90,7 +92,7 @@ void draw(){
 
   if (player != null ) {
     if (!player.isPlaying() && recordingStatus == "play") {
-      currentPlaybackIndex = currentPlaybackIndex + 1;
+      currentPlaybackIndex +=  1;
       currentPlaybackIndex = (currentPlaybackIndex > numberOfRecordings) ? 0 : currentPlaybackIndex;
       String fileName = "data/" + currentPlaybackIndex + ".wav";
       AudioRecordingStream myFile = minim.loadFileStream( fileName, 1024, true);
@@ -110,4 +112,3 @@ void draw(){
     } 
   } 
 }
-

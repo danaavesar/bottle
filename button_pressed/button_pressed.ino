@@ -3,10 +3,12 @@
 int buttonPin = 7;
 boolean currentState = LOW;//stroage for current button state
 boolean lastState = LOW;//storage for last button state
+int numberOfRecordings;
 
 void setup(){
   pinMode(buttonPin, INPUT);//this time we will set the pin as INPUT
   Serial.begin(9600);//initialize Serial connection
+
 }
 
 void loop(){
@@ -19,4 +21,6 @@ void loop(){
     delay(1);//crude form of button debouncing
   }
   lastState = currentState;
+  
+  
 }
