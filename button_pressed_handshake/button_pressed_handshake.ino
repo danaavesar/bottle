@@ -7,33 +7,29 @@ int val;
 int numberPressed = 0;
 int ledBrightness = 0;
 int lightPin = 9;
+const int motorPin = 3;
+unsigned long timeOfRecording;
+
 
 void setup(){
   pinMode(buttonPin, INPUT);//this time we will set the pin as INPUT
   Serial.begin(9600);//initialize Serial connection
 //  establishContact();
+  pinMode(motorPin, OUTPUT);
 
 }
 
 void loop(){
-  
+
   //button pressing
-
-
-  //if we are receiving something from processing then send processing info
-  if (Serial.available() > 0) { // If data is available to read,
-    val = Serial.read(); // read it and store it in val
-
-    delay(100);
-  } 
-  else {
-     currentState = digitalRead(buttonPin);
+    currentState = digitalRead(buttonPin);
     if (currentState == HIGH && lastState == LOW){//if button has just been pressed
       Serial.println("pressed");
       numberPressed ++;
        if(numberPressed%2 == 0){
          ledBrightness = ledBrightness + 1;
-    
+         timeOfRecording = millis();
+           digitalWrite(motorPin, HIGH);
        }
       delay(1);//crude form of button debouncing
     } else if(currentState == LOW && lastState == HIGH){
@@ -41,18 +37,10 @@ void loop(){
       delay(1);//crude form of button debouncing
     }
   lastState = currentState;
-  }
-  
+  if(millis() > timeOfRecording + 300 ){
+      digitalWrite(motorPin, LOW);
+  } 
 
  analogWrite(lightPin ,map(ledBrightness,0, 10, 0, 255));
- Serial.println(ledBrightness);
-  
   
 }
-
-//void establishContact(){
-//  while (Serial.available() <= 0) {
-//    Serial.println("A");   // send a capital A
-//    delay(300);
-//  }
-//}
